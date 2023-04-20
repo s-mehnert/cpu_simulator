@@ -10,3 +10,9 @@ with open("instruction_input.txt") as instructions:
 
 processor = CPU()
 
+while load_instructions:
+    processor.fetch_instruction(load_instructions.popleft())
+    processor.pass_instruction_to_ALU()
+
+print("All instructions processed.")
+
