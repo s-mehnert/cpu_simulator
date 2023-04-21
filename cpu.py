@@ -7,10 +7,13 @@ class CPU:
     def __init__(self):
         self.program_counter = None
         self.instruction_register = None
-        self.registers = {"R1" : None, "R2" : None, "R3" : None, "R4" : None, "R5" : None, "R6" : None}
+        self.registers = {1 : None, 2 : None, 3 : None, 4 : None, 5 : None, 6 : None, 7 : None, 8 : None}
             
     def fetch_instruction(self, instruction): # instructions will come in the form of a string
         print("Fetching instruction:", instruction, )
+        if instruction == None:
+            print("No instruction to be fetched.")
+            return
         instruction = instruction.strip().split(",")
         if self.instruction_register == None:
             self.instruction_register = instruction
@@ -27,9 +30,14 @@ class CPU:
         
         command = instruction.popleft()
         decoded_instruction = is_architecture[command]
+        print(decoded_instruction)
         if not instruction:
-            print(decoded_instruction)
             return decoded_instruction
+        if command == "J":
+            fetch_from_register = instruction.popleft()
+            self.fetch_instruction(self.registers[int(fetch_from_register)])
+            decoded_instruction += ": jumping to register " + fetch_from_register
+
         print("So far decoded:", decoded_instruction)
         print("Now decoding rest of instruction:", instruction)
         destination_register = ""
