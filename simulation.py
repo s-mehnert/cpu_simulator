@@ -9,14 +9,15 @@ with open("instruction_input.txt") as instructions:
         load_instructions.append(line)
 
 instruction_set_architecture = {
-    "CACHE" : "cache command",
-    "ADDI" : "Addition",
-    "ADD" : "Addition",
-    "J" : "jump command",
-    "HALT" : "terminate execution"
+    "CACHE" : "Cache Command",
+    "ADDI" : "Addition Operation",
+    "ADD" : "Addition Operation",
+    "J" : "Jump Command",
+    "HALT" : "Terminate Execution Command"
 }
 
 processor = CPU()
+
 
 while load_instructions:
     processor.fetch_instruction(load_instructions.popleft())
