@@ -7,7 +7,7 @@ class CPU:
     def __init__(self):
         self.program_counter = None
         self.instruction_register = None
-        self.registers = {1 : None, 2 : None, 3 : None, 4 : None, 5 : None, 6 : None, 7 : None, 8 : None}
+        self.registers = {"1" : None, "2" : None, "3" : None, "4" : None, "5" : None, "6" : None, "7" : None, "8" : None}
             
     def clear_instruction_register(self):
         self.instruction_register = None
@@ -18,11 +18,11 @@ class CPU:
     
     def fetch_instruction(self, instruction): # instructions will come in the form of a string
         print("\nFetching instruction:", instruction)
-        if instruction == None:
+        if not instruction:
             print("No instruction to be fetched.")
             return
         instruction = instruction.strip().split(",")
-        if self.instruction_register == None:
+        if not self.instruction_register:
             self.instruction_register = instruction
             print("Loading instruction into IR:", self.instruction_register)
             print("Ready for decoding.")
@@ -30,6 +30,9 @@ class CPU:
             print("Cannot fetch instruction as previous instruction is still waiting in line.")
 
     def decode_instruction(self, is_architecture):
+        if not self.instruction_register:
+            print("Instruction register empty. Aborting command.")
+            return
         print("\nDecoding instruction:", self.instruction_register)
         instruction = deque()
         for item in self.instruction_register:
@@ -80,19 +83,32 @@ class CPU:
                     instruction.popleft()
 
         print("Decoding complete")
+        print("Decoded instruction:", decoded_instruction)
         print(explanation)
-        print("Ready to pass instruction to ALU")
-        
+        print("Clearing IR:", self.instruction_register) 
         self.clear_instruction_register()
-        return decoded_instruction
+        print("Preparing for execution")
+        self.execute_command(decoded_instruction, is_architecture)
         
+    def execute_command(self, decoded_instruction, is_architecture):
+        command = decoded_instruction["command"]
+        if command == "J":
+            self.fetch_instruction(self.registers[decoded_instruction["jump_to_reg"]])
+            self.decode_instruction(is_architecture)
+        elif command == "HALT":
+            print("Terminating program now. Bye-bye.")
+            return
+        elif command == "CACHE":
+            print("Cache command pending to be added later")
+            return
+        else:
+            print("Ready to pass instruction to ALU")
+            self.pass_instruction_to_ALU(decoded_instruction)
+    
 
-        
-
-    def pass_instruction_to_ALU(self):
-        print("\nPassing instruction to ALU:", self.instruction_register)
-        self.instruction_register = None # temporary solution for testing
-        print("Clearing IR:", self.instruction_register)        
+    def pass_instruction_to_ALU(self, decoded_instruction):
+        print("\nPassing instruction to ALU:", decoded_instruction)
+        self.instruction_register = None # temporary solution for testing  
 
     def receive_result_from_ALU(self):
         pass

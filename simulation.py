@@ -22,7 +22,6 @@ processor = CPU()
 while load_instructions:
     processor.fetch_instruction(load_instructions.popleft())
     processor.decode_instruction(instruction_set_architecture)
-    processor.pass_instruction_to_ALU()
 
 print("All instructions processed.")
 
