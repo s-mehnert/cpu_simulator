@@ -1,13 +1,14 @@
 # The code in this file will simulate the FETCH -> DECODE -> EXECUTE -> STORE instruction cycle a Central Processing Unit (CPU) performs
 
 from collections import deque
+from arithmetic_logic_unit import ALU
 
 
 class CPU:
     def __init__(self):
         self.program_counter = None
         self.instruction_register = None
-        self.registers = {"1" : None, "2" : None, "3" : None, "4" : None, "5" : None, "6" : None, "7" : None, "8" : None}
+        self.registers = {"R1" : 6, "R2" : 5, "R3" : None, "R4" : None, "R5" : None, "R6" : None, "R7" : None, "R8" : None}
             
     def clear_instruction_register(self):
         self.instruction_register = None
@@ -51,7 +52,7 @@ class CPU:
         explanation = is_architecture[command]
         while instruction:
             if command == "J":
-                jump_to_reg = instruction.popleft()
+                jump_to_reg = "R" + instruction.popleft()
                 decoded_instruction["jump_to_reg"] = jump_to_reg
                 explanation += ": jumping to register " + jump_to_reg
             elif command == "HALT":
@@ -66,15 +67,21 @@ class CPU:
                 decoded_instruction["dest_reg"] = dest_reg
                 source_reg_1 = instruction.popleft()
                 decoded_instruction["source_reg_1"] = source_reg_1
+                val_source_reg_1 = self.registers[decoded_instruction["source_reg_1"]]
+                decoded_instruction["val_source_reg_1"] = val_source_reg_1
                 source_reg_2 = instruction.popleft()
                 decoded_instruction["source_reg_2"] = source_reg_2
+                val_source_reg_2 = self.registers[decoded_instruction["source_reg_2"]]
+                decoded_instruction["val_source_reg_2"] = val_source_reg_2
                 explanation += ": adding numbers stored in registers, storing result in register"
             elif command == "ADDI":
                 dest_reg = instruction.popleft()
                 decoded_instruction["dest_reg"] = dest_reg
                 source_reg_1 = instruction.popleft()
                 decoded_instruction["source_reg_1"] = source_reg_1
-                constant = instruction.popleft()
+                val_source_reg_1 = self.registers[decoded_instruction["source_reg_1"]]
+                decoded_instruction["val_source_reg_1"] = val_source_reg_1
+                constant = int(instruction.popleft())
                 decoded_instruction["constant"] = constant
                 explanation += ": adding constant to number stored in register, storing result in register"
             else:
@@ -85,8 +92,8 @@ class CPU:
         print("Decoding complete")
         print("Decoded instruction:", decoded_instruction)
         print(explanation)
-        print("Clearing IR:", self.instruction_register) 
         self.clear_instruction_register()
+        print("Clearing IR:", self.instruction_register) 
         print("Preparing for execution")
         self.execute_command(decoded_instruction, is_architecture)
         
@@ -102,19 +109,18 @@ class CPU:
             print("Cache command pending to be added later")
             return
         else:
-            print("Ready to pass instruction to ALU")
-            self.pass_instruction_to_ALU(decoded_instruction)
+            print("Preparing to pass instruction to ALU")
+            self.pass_instruction_to_ALU_and_store_result(decoded_instruction)
     
 
-    def pass_instruction_to_ALU(self, decoded_instruction):
+    def pass_instruction_to_ALU_and_store_result(self, decoded_instruction):
         print("\nPassing instruction to ALU:", decoded_instruction)
-        self.instruction_register = None # temporary solution for testing  
-
-    def receive_result_from_ALU(self):
-        pass
-
-    def store_result(self):
-        pass
+        alu = ALU(decoded_instruction)
+        alu.execute_instruction()
+        result_of_operation = alu.result
+        decoded_instruction["val_dest_reg"] = result_of_operation
+        print(f"Storing result {result_of_operation} in destination register {decoded_instruction['dest_reg']}...")
+        self.registers[decoded_instruction["dest_reg"]] = result_of_operation
 
 
 
