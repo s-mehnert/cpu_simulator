@@ -8,7 +8,7 @@ class CPU:
     def __init__(self):
         self.program_counter = None
         self.instruction_register = None
-        self.registers = {"R1" : 6, "R2" : 5, "R3" : None, "R4" : None, "R5" : None, "R6" : None, "R7" : None, "R8" : None}
+        self.registers = {"R1" : 6, "R2" : 5, "R3" : None, "R4" : None, "R5" : None, "R6" : None, "R7" : None, "R8" : "ADDI,R5,R1,7"}
             
     def clear_instruction_register(self):
         self.instruction_register = None
