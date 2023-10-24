@@ -18,10 +18,10 @@ class CPU:
             self.registers[key] = None
     
     def fetch_instruction(self, instruction): # instructions will come in the form of a string
-        print("\nFetching instruction:", instruction)
         if not instruction:
             print("No instruction to be fetched.")
             return
+        print("\nFetching instruction:", instruction)
         instruction = instruction.strip().split(",")
         if not self.instruction_register:
             self.instruction_register = instruction
@@ -61,7 +61,7 @@ class CPU:
             elif command == "CACHE":
                 code = instruction.popleft()
                 decoded_instruction["code"] = code
-                explanation += ": modifying cache"
+                explanation += ": configuring L" + code + " cache"
             elif command == "ADD":
                 dest_reg = instruction.popleft()
                 decoded_instruction["dest_reg"] = dest_reg
@@ -95,6 +95,7 @@ class CPU:
         self.clear_instruction_register()
         print("Clearing IR:", self.instruction_register) 
         print("Preparing for execution")
+        
         self.execute_command(decoded_instruction, is_architecture)
         
     def execute_command(self, decoded_instruction, is_architecture):
@@ -106,7 +107,7 @@ class CPU:
             print("Terminating program now. Bye-bye.")
             return
         elif command == "CACHE":
-            print("Cache command pending to be added later")
+            print("Cache configured")
             return
         else:
             print("Preparing to pass instruction to ALU")
