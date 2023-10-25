@@ -1,4 +1,5 @@
-# The code in this file will simulate the FETCH -> DECODE -> EXECUTE -> STORE instruction cycle a Central Processing Unit (CPU) performs
+# The code in this file will simulate the FETCH -> DECODE -> EXECUTE -> STORE
+# instruction cycle a Central Processing Unit (CPU) performs
 
 from collections import deque
 from arithmetic_logic_unit import ALU
@@ -8,16 +9,17 @@ class CPU:
     def __init__(self):
         self.program_counter = None
         self.instruction_register = None
-        self.registers = {"R1" : 6, "R2" : 5, "R3" : None, "R4" : None, "R5" : None, "R6" : None, "R7" : None, "R8" : "ADDI,R5,R1,7"}
-            
+        self.registers = {"R1": 6, "R2": 5, "R3": None, "R4": None, "R5": None,
+                          "R6": None, "R7": None, "R8": "ADDI,R5,R1,7"}
+
     def clear_instruction_register(self):
         self.instruction_register = None
 
     def reset_registers(self):
         for key, value in self.registers:
             self.registers[key] = None
-    
-    def fetch_instruction(self, instruction): # instructions will come in the form of a string
+
+    def fetch_instruction(self, instruction):  # instructions will come in the form of a string
         if not instruction:
             print("No instruction to be fetched.")
             return
@@ -39,13 +41,13 @@ class CPU:
         for item in self.instruction_register:
             instruction.append(item)
         decoded_instruction = {
-            "command" : None, 
-            "dest_reg" : None, 
-            "source_reg_1" : None, 
-            "source_reg_2" : None, 
-            "constant" : None, 
-            "jump_to_reg" : None,
-            "code" : None
+            "command": None,
+            "dest_reg": None,
+            "source_reg_1": None,
+            "source_reg_2": None,
+            "constant": None,
+            "jump_to_reg": None,
+            "code": None
             }
         command = instruction.popleft()
         decoded_instruction["command"] = command
@@ -67,11 +69,13 @@ class CPU:
                 decoded_instruction["dest_reg"] = dest_reg
                 source_reg_1 = instruction.popleft()
                 decoded_instruction["source_reg_1"] = source_reg_1
-                val_source_reg_1 = self.registers[decoded_instruction["source_reg_1"]]
+                val_source_reg_1 = self.registers[decoded_instruction
+                                                  ["source_reg_1"]]
                 decoded_instruction["val_source_reg_1"] = val_source_reg_1
                 source_reg_2 = instruction.popleft()
                 decoded_instruction["source_reg_2"] = source_reg_2
-                val_source_reg_2 = self.registers[decoded_instruction["source_reg_2"]]
+                val_source_reg_2 = self.registers[decoded_instruction
+                                                  ["source_reg_2"]]
                 decoded_instruction["val_source_reg_2"] = val_source_reg_2
                 explanation += ": adding numbers stored in registers, storing result in register"
             elif command == "ADDI":
@@ -79,7 +83,8 @@ class CPU:
                 decoded_instruction["dest_reg"] = dest_reg
                 source_reg_1 = instruction.popleft()
                 decoded_instruction["source_reg_1"] = source_reg_1
-                val_source_reg_1 = self.registers[decoded_instruction["source_reg_1"]]
+                val_source_reg_1 = self.registers[decoded_instruction
+                                                  ["source_reg_1"]]
                 decoded_instruction["val_source_reg_1"] = val_source_reg_1
                 constant = int(instruction.popleft())
                 decoded_instruction["constant"] = constant
@@ -93,15 +98,16 @@ class CPU:
         print("Decoded instruction:", decoded_instruction)
         print(explanation)
         self.clear_instruction_register()
-        print("Clearing IR:", self.instruction_register) 
+        print("Clearing IR:", self.instruction_register)
         print("Preparing for execution")
-        
+
         self.execute_command(decoded_instruction, is_architecture)
-        
+
     def execute_command(self, decoded_instruction, is_architecture):
         command = decoded_instruction["command"]
         if command == "J":
-            self.fetch_instruction(self.registers[decoded_instruction["jump_to_reg"]])
+            self.fetch_instruction(self.registers[decoded_instruction
+                                                  ["jump_to_reg"]])
             self.decode_instruction(is_architecture)
         elif command == "HALT":
             print("Terminating program now. Bye-bye.")
@@ -112,7 +118,6 @@ class CPU:
         else:
             print("Preparing to pass instruction to ALU")
             self.pass_instruction_to_ALU_and_store_result(decoded_instruction)
-    
 
     def pass_instruction_to_ALU_and_store_result(self, decoded_instruction):
         print("\nPassing instruction to ALU:", decoded_instruction)
@@ -122,6 +127,3 @@ class CPU:
         decoded_instruction["val_dest_reg"] = result_of_operation
         print(f"Storing result {result_of_operation} in destination register {decoded_instruction['dest_reg']}...")
         self.registers[decoded_instruction["dest_reg"]] = result_of_operation
-
-
-

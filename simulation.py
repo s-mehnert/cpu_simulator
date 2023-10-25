@@ -1,5 +1,4 @@
 from cpu import CPU
-#from arithmetic_logic_unit import ALU
 from collections import deque
 
 load_instructions = deque()
@@ -9,11 +8,11 @@ with open("instruction_input.txt") as instructions:
         load_instructions.append(line)
 
 instruction_set_architecture = {
-    "CACHE" : "Cache Command",
-    "ADDI" : "Addition Operation",
-    "ADD" : "Addition Operation",
-    "J" : "Jump Command",
-    "HALT" : "Terminate Execution Command"
+    "CACHE": "Cache Command",
+    "ADDI": "Addition Operation",
+    "ADD": "Addition Operation",
+    "J": "Jump Command",
+    "HALT": "Terminate Execution Command"
 }
 
 processor = CPU()
@@ -24,4 +23,3 @@ while load_instructions:
     processor.decode_instruction(instruction_set_architecture)
 
 print("All instructions processed.")
-
