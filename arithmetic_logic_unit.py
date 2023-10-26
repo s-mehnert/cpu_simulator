@@ -7,13 +7,13 @@ class ALU:
 
     def execute_instruction(self):
         if self.instruction["command"] == "ADD":
-            print(f"Adding {self.instruction['val_source_reg_1']} to {self.instruction['val_source_reg_2']}...")
+            print(f"  Adding {self.instruction['val_source_reg_1']} to {self.instruction['val_source_reg_2']}")
             self.result = self.instruction["val_source_reg_1"] + self.instruction["val_source_reg_2"]
-            print("Result:", self.result)
+            print("  Result:", self.result)
 
         elif self.instruction["command"] == "ADDI":
-            print(f"Adding {self.instruction['val_source_reg_1']} to {self.instruction['constant']}...")
+            print(f"  Adding {self.instruction['val_source_reg_1']} to {self.instruction['constant']}")
             self.result = self.instruction["val_source_reg_1"] + self.instruction["constant"]
-            print("Result:", self.result)
+            print("  Result:", self.result)
         else:
-            print("Unknown command:", self.instruction["command"], "--> Operation aborted.")
+            print("  Unknown command:", self.instruction["command"], "--> Operation aborted.")

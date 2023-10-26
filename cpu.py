@@ -21,22 +21,22 @@ class CPU:
 
     def fetch_instruction(self, instruction):  # instructions will come in the form of a string
         if not instruction:
-            print("No instruction to be fetched.")
+            print("\n\nNo instruction to be fetched.")
             return
-        print("\nFetching instruction:", instruction)
+        print("\n\nFetching instruction...")
         instruction = instruction.strip().split(",")
         if not self.instruction_register:
             self.instruction_register = instruction
             print("Loading instruction into IR:", self.instruction_register)
-            print("Ready for decoding.")
+            print("Ready for decoding")
         else:
             print("Cannot fetch instruction as previous instruction is still waiting in line.")
 
     def decode_instruction(self, is_architecture):
         if not self.instruction_register:
-            print("Instruction register empty. Aborting command.")
+            print("\nInstruction register empty. Aborting command.")
             return
-        print("\nDecoding instruction:", self.instruction_register)
+        print("\nDecoding instruction...")
         instruction = deque()
         for item in self.instruction_register:
             instruction.append(item)
@@ -95,11 +95,14 @@ class CPU:
                     instruction.popleft()
 
         print("Decoding complete")
-        print("Decoded instruction:", decoded_instruction)
-        print(explanation)
+        print("Decoded instruction -->", explanation)
+        for key, value in decoded_instruction.items():
+            print("  ", key, "-->", value)
+        print()
+
         self.clear_instruction_register()
-        print("Clearing IR:", self.instruction_register)
-        print("Preparing for execution")
+        print("Clearing IR...")
+        print("Preparing for execution...")
 
         self.execute_command(decoded_instruction, is_architecture)
 
@@ -116,14 +119,14 @@ class CPU:
             print("Cache configured")
             return
         else:
-            print("Preparing to pass instruction to ALU")
+            print("Preparing to pass instruction to ALU...")
             self.pass_instruction_to_ALU_and_store_result(decoded_instruction)
 
     def pass_instruction_to_ALU_and_store_result(self, decoded_instruction):
-        print("\nPassing instruction to ALU:", decoded_instruction)
+        print("\nPassing instruction to ALU...")
         alu = ALU(decoded_instruction)
         alu.execute_instruction()
         result_of_operation = alu.result
         decoded_instruction["val_dest_reg"] = result_of_operation
-        print(f"Storing result {result_of_operation} in destination register {decoded_instruction['dest_reg']}...")
+        print(f"Receiving result from ALU and storing it in destination register {decoded_instruction['dest_reg']}")
         self.registers[decoded_instruction["dest_reg"]] = result_of_operation
